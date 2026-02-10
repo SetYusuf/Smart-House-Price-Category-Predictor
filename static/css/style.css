@@ -20,13 +20,13 @@
 
 html, body {
     scroll-behavior: smooth;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     min-height: 100vh;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+    color: #ffffff;
 }
 
 /* ==================== Navigation Bar ==================== */
@@ -56,9 +56,9 @@ body {
 
 /* ==================== Header Section ==================== */
 .header-section {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+    background: linear-gradient(135deg, rgba(42, 42, 42, 0.9) 0%, rgba(42, 42, 42, 0.7) 100%);
     border-radius: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     box-shadow: var(--shadow-lg);
     animation: slideInDown 0.8s ease-out;
@@ -134,7 +134,8 @@ body {
     border-radius: 15px;
     overflow: hidden;
     transition: var(--transition);
-    background: white;
+    background: #2a2a2a;
+    color: #ffffff;
 }
 
 .card:hover {
@@ -177,7 +178,7 @@ body {
 
 /* ==================== Form Styles ==================== */
 .form-label {
-    color: #333;
+    color: #ffffff;
     margin-bottom: 0.5rem;
 }
 
@@ -187,11 +188,13 @@ body {
 }
 
 .input-field {
-    border: 2px solid #e9ecef;
+    border: 2px solid #444;
     border-radius: 8px;
     padding: 0.75rem;
     font-size: 1rem;
     transition: var(--transition);
+    background: #333;
+    color: #ffffff;
 }
 
 .input-field:focus {
@@ -279,10 +282,11 @@ body {
 /* ==================== Input Summary Styles ==================== */
 .input-summary {
     border-left: 4px solid var(--primary-color);
+    background: #333 !important;
 }
 
 .input-summary h5 {
-    color: var(--primary-color);
+    color: var(--info-color);
     font-weight: 700;
     margin-bottom: 1rem;
 }
@@ -291,6 +295,8 @@ body {
 .result-item {
     border-radius: 10px;
     animation: fadeIn 0.5s ease-out;
+    background: #333 !important;
+    color: #ffffff;
 }
 
 @keyframes fadeIn {
@@ -304,7 +310,7 @@ body {
 
 .result-item h5 {
     font-weight: 700;
-    color: #333;
+    color: #ffffff;
 }
 
 .bg-gradient {
@@ -357,12 +363,17 @@ body {
 .table {
     margin-bottom: 0;
     font-size: 0.95rem;
+    color: #ffffff;
 }
 
 .table thead {
-    background: #f8f9fa;
+    background: #1a1a1a;
     font-weight: 700;
-    color: var(--primary-color);
+    color: var(--info-color);
+}
+
+.table tbody {
+    color: #ffffff;
 }
 
 .table tbody tr {
@@ -370,7 +381,7 @@ body {
 }
 
 .table tbody tr:hover {
-    background-color: #f8f9fa;
+    background-color: #333;
     transform: scale(1.01);
 }
 
@@ -421,9 +432,10 @@ body {
 /* ==================== Empty State Styles ==================== */
 #emptyState {
     border-radius: 15px;
-    background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 110, 253, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 110, 253, 0.1) 100%) !important;
     border: 2px dashed var(--info-color);
     animation: slideInUp 0.8s ease-out;
+    color: #ffffff !important;
 }
 
 /* ==================== Footer Styles ==================== */
