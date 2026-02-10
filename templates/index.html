@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart House Price & Category Predictor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-dark bg-gradient">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-home"></i> Smart House Predictor
+            </span>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid main-container">
+        
+        <!-- Header Section with Animations -->
+        <div class="header-section text-center py-5">
+            <!-- House Icon with Animation -->
+            <div class="house-icon-container mb-4">
+                <i class="fas fa-house-chimney"></i>
+            </div>
+
+            <!-- Animated Title -->
+            <h1 class="display-4 fw-bold mb-3">
+                <span class="typing-animation">Predict Your House Price Instantly!</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="lead text-muted mb-4">
+                Enter house details or upload a CSV file to get AI-powered predictions
+            </p>
+        </div>
+
+        <!-- Main Content Row -->
+        <div class="row mb-5">
+            
+            <!-- Left Column: Input Form -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-lg form-card">
+                    <div class="card-header bg-gradient py-4">
+                        <h2 class="card-title mb-0">
+                            <i class="fas fa-edit"></i> Single House Prediction
+                        </h2>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <form id="predictionForm">
+                            <!-- House Size Input -->
+                            <div class="mb-3">
+                                <label for="size" class="form-label fw-bold">
+                                    <i class="fas fa-expand"></i> House Size (sqft)
+                                </label>
+                                <input type="number" class="form-control input-field" id="size" 
+                                       placeholder="e.g., 2500" step="0.01" required>
+                                <small class="form-text text-muted">Total square footage of the house</small>
+                            </div>
+
+                            <!-- Number of Rooms -->
+                            <div class="mb-3">
+                                <label for="rooms" class="form-label fw-bold">
+                                    <i class="fas fa-door-open"></i> Number of Rooms
+                                </label>
+                                <input type="number" class="form-control input-field" id="rooms" 
+                                       placeholder="e.g., 4" step="0.01" required>
+                                <small class="form-text text-muted">Total rooms in the house</small>
+                            </div>
+
+                            <!-- Location Score -->
+                            <div class="mb-3">
+                                <label for="location" class="form-label fw-bold">
+                                    <i class="fas fa-map-marker-alt"></i> Location Score (1-10)
+                                </label>
+                                <input type="number" class="form-control input-field" id="location" 
+                                       placeholder="e.g., 8" min="1" max="10" step="0.1" required>
+                                <small class="form-text text-muted">How good is the location? (1=Poor, 10=Excellent)</small>
+                            </div>
+
+                            <!-- Age of House -->
+                            <div class="mb-4">
+                                <label for="age" class="form-label fw-bold">
+                                    <i class="fas fa-calendar-alt"></i> Age of House (years)
+                                </label>
+                                <input type="number" class="form-control input-field" id="age" 
+                                       placeholder="e.g., 15" min="0" step="0.1" required>
+                                <small class="form-text text-muted">How old is the house?</small>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary btn-lg w-100 pulse-button">
+                                <i class="fas fa-magic"></i> Predict Price & Category
+                            </button>
+                        </form>
+
+                        <!-- Loading Spinner -->
+                        <div id="loadingSpinner" class="text-center mt-3" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="text-muted mt-2">Analyzing your house...</p>
+                        </div>
+
+                        <!-- Error Alert -->
+                        <div id="errorAlert" class="alert alert-danger alert-dismissible fade mt-3" role="alert" style="display: none;">
+                            <strong><i class="fas fa-exclamation-circle"></i> Error:</strong>
+                            <span id="errorMessage"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CSV Upload Section -->
+                <div class="card shadow-lg form-card mt-4">
+                    <div class="card-header bg-gradient py-4">
+                        <h2 class="card-title mb-0">
+                            <i class="fas fa-file-csv"></i> Batch Prediction (CSV)
+                        </h2>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <form id="csvForm">
+                            <div class="mb-3">
+                                <label for="csvFile" class="form-label fw-bold">
+                                    Upload CSV File
+                                </label>
+                                <input type="file" class="form-control" id="csvFile" accept=".csv" required>
+                                <small class="form-text text-muted d-block mt-2">
+                                    <strong>CSV Format:</strong> Must contain columns: size, rooms, location, age
+                                </small>
+                                <small class="form-text text-muted d-block mt-1">
+                                    Example: <code>size,rooms,location,age</code><br>
+                                    <code>2500,4,8,15</code>
+                                </small>
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                <i class="fas fa-upload"></i> Upload & Predict
+                            </button>
+                        </form>
+
+                        <!-- CSV Loading Spinner -->
+                        <div id="csvLoadingSpinner" class="text-center mt-3" style="display: none;">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="text-muted mt-2">Processing CSV file...</p>
+                        </div>
+
+                        <!-- CSV Error Alert -->
+                        <div id="csvErrorAlert" class="alert alert-danger alert-dismissible fade mt-3" role="alert" style="display: none;">
+                            <strong><i class="fas fa-exclamation-circle"></i> Error:</strong>
+                            <span id="csvErrorMessage"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Results Display -->
+            <div class="col-lg-6 mb-4">
+                <!-- Single Prediction Results -->
+                <div id="resultsContainer" style="display: none;">
+                    <div class="card shadow-lg result-card">
+                        <div class="card-header bg-success bg-gradient py-4">
+                            <h2 class="card-title mb-0">
+                                <i class="fas fa-chart-line"></i> Prediction Results
+                            </h2>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <!-- Input Summary -->
+                            <div class="input-summary mb-4 p-3 bg-light rounded">
+                                <h5 class="mb-3"><i class="fas fa-info-circle"></i> House Details</h5>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <small class="text-muted">Size (sqft)</small>
+                                        <p class="mb-0"><strong id="resultSize"></strong></p>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Rooms</small>
+                                        <p class="mb-0"><strong id="resultRooms"></strong></p>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Location Score</small>
+                                        <p class="mb-0"><strong id="resultLocation"></strong></p>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Age (years)</small>
+                                        <p class="mb-0"><strong id="resultAge"></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Price Prediction Card -->
+                            <div class="result-item mb-4 p-3 bg-gradient rounded border-start border-primary border-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1"><i class="fas fa-dollar-sign text-primary"></i> Predicted Price</h5>
+                                        <p class="text-muted mb-0">AI-powered Linear Regression</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <h3 class="text-primary fw-bold" id="predictedPrice">$0.00</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Category Prediction (Logistic Regression) -->
+                            <div class="result-item mb-4 p-3 bg-info bg-opacity-10 rounded border-start border-info border-4">
+                                <h5 class="mb-3"><i class="fas fa-tags text-info"></i> Category (Logistic Regression)</h5>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="fw-bold">Category:</span>
+                                    <span class="badge bg-info" id="categoryLogistic">N/A</span>
+                                </div>
+                                <div class="progress-group">
+                                    <div class="progress-item">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small>Cheap</small>
+                                            <small id="prob_lg_cheap">0%</small>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-success" id="probBar_lg_cheap" role="progressbar"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item mt-2">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small>Medium</small>
+                                            <small id="prob_lg_medium">0%</small>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" id="probBar_lg_medium" role="progressbar"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item mt-2">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small>Expensive</small>
+                                            <small id="prob_lg_expensive">0%</small>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-danger" id="probBar_lg_expensive" role="progressbar"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Category Prediction (Decision Tree) -->
+                            <div class="result-item mb-4 p-3 bg-warning bg-opacity-10 rounded border-start border-warning border-4">
+                                <h5 class="mb-3"><i class="fas fa-tree text-warning"></i> Category (Decision Tree)</h5>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="fw-bold">Category:</span>
+                                    <span class="badge bg-warning" id="categoryTree">N/A</span>
+                                </div>
+                                <div class="progress-group">
+                                    <div class="progress-item">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small>Cheap</small>
+                                            <small id="prob_tree_cheap">0%</small>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-success" id="probBar_tree_cheap" role="progressbar"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item mt-2">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small>Medium</small>
+                                            <small id="prob_tree_medium">0%</small>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" id="probBar_tree_medium" role="progressbar"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item mt-2">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small>Expensive</small>
+                                            <small id="prob_tree_expensive">0%</small>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-danger" id="probBar_tree_expensive" role="progressbar"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Clear Results Button -->
+                            <button class="btn btn-secondary w-100 mt-3" onclick="clearResults()">
+                                <i class="fas fa-redo"></i> Clear Results
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CSV Results Table -->
+                <div id="csvResultsContainer" style="display: none;">
+                    <div class="card shadow-lg result-card">
+                        <div class="card-header bg-success bg-gradient py-4">
+                            <h2 class="card-title mb-0">
+                                <i class="fas fa-table"></i> Batch Prediction Results
+                            </h2>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm" id="csvResultsTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Row</th>
+                                            <th>Size</th>
+                                            <th>Rooms</th>
+                                            <th>Location</th>
+                                            <th>Age</th>
+                                            <th>Predicted Price</th>
+                                            <th>Category</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="csvResultsBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button class="btn btn-secondary w-100 mt-3" onclick="clearCsvResults()">
+                                <i class="fas fa-redo"></i> Clear Results
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="card shadow-lg result-card border-info">
+                    <div class="card-body text-center p-5">
+                        <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
+                        <h4 class="text-muted mt-3">No Predictions Yet</h4>
+                        <p class="text-muted">Enter house details or upload a CSV file to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-dark text-white text-center py-4 mt-5">
+            <p class="mb-0">
+                <i class="fas fa-copyright"></i> 2026 Smart House Price & Category Predictor | 
+                Powered by Machine Learning
+            </p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // ==================== Utility Functions ====================
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorAlert.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('errorAlert').style.display = 'none';
+        }
+
+        function showCsvError(message) {
+            const csvErrorAlert = document.getElementById('csvErrorAlert');
+            const csvErrorMessage = document.getElementById('csvErrorMessage');
+            csvErrorMessage.textContent = message;
+            csvErrorAlert.style.display = 'block';
+        }
+
+        function hideCsvError() {
+            document.getElementById('csvErrorAlert').style.display = 'none';
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount);
+        }
+
+        // ==================== Single Prediction Handler ====================
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+
+            // Get form values
+            const formData = {
+                size: document.getElementById('size').value,
+                rooms: document.getElementById('rooms').value,
+                location: document.getElementById('location').value,
+                age: document.getElementById('age').value
+            };
+
+            // Show loading
+            document.getElementById('loadingSpinner').style.display = 'block';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Prediction failed');
+                }
+
+                const data = await response.json();
+
+                // Display results
+                displayResults(data.predictions, data.input);
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('resultsContainer').style.display = 'block';
+                document.getElementById('csvResultsContainer').style.display = 'none';
+
+            } catch (error) {
+                showError(error.message);
+                console.error('Error:', error);
+            } finally {
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+        });
+
+        function displayResults(predictions, input) {
+            // Display input summary
+            document.getElementById('resultSize').textContent = input.size + ' sqft';
+            document.getElementById('resultRooms').textContent = input.rooms + ' rooms';
+            document.getElementById('resultLocation').textContent = input.location + '/10';
+            document.getElementById('resultAge').textContent = input.age + ' years';
+
+            // Display predicted price
+            document.getElementById('predictedPrice').textContent = formatCurrency(predictions.price);
+
+            // Display Logistic Regression results
+            document.getElementById('categoryLogistic').textContent = predictions.category_logistic;
+            document.getElementById('prob_lg_cheap').textContent = predictions.probabilities.logistic.Cheap + '%';
+            document.getElementById('prob_lg_medium').textContent = predictions.probabilities.logistic.Medium + '%';
+            document.getElementById('prob_lg_expensive').textContent = predictions.probabilities.logistic.Expensive + '%';
+
+            document.getElementById('probBar_lg_cheap').style.width = predictions.probabilities.logistic.Cheap + '%';
+            document.getElementById('probBar_lg_medium').style.width = predictions.probabilities.logistic.Medium + '%';
+            document.getElementById('probBar_lg_expensive').style.width = predictions.probabilities.logistic.Expensive + '%';
+
+            // Display Decision Tree results
+            document.getElementById('categoryTree').textContent = predictions.category_tree;
+            document.getElementById('prob_tree_cheap').textContent = predictions.probabilities.tree.Cheap + '%';
+            document.getElementById('prob_tree_medium').textContent = predictions.probabilities.tree.Medium + '%';
+            document.getElementById('prob_tree_expensive').textContent = predictions.probabilities.tree.Expensive + '%';
+
+            document.getElementById('probBar_tree_cheap').style.width = predictions.probabilities.tree.Cheap + '%';
+            document.getElementById('probBar_tree_medium').style.width = predictions.probabilities.tree.Medium + '%';
+            document.getElementById('probBar_tree_expensive').style.width = predictions.probabilities.tree.Expensive + '%';
+        }
+
+        function clearResults() {
+            document.getElementById('predictionForm').reset();
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+            hideError();
+        }
+
+        // ==================== CSV Prediction Handler ====================
+        document.getElementById('csvForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideCsvError();
+
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showCsvError('Please select a CSV file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('csvLoadingSpinner').style.display = 'block';
+
+            try {
+                const response = await fetch('/predict-csv', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'CSV prediction failed');
+                }
+
+                const data = await response.json();
+
+                // Display CSV results
+                displayCsvResults(data.results);
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('csvResultsContainer').style.display = 'block';
+                document.getElementById('resultsContainer').style.display = 'none';
+
+            } catch (error) {
+                showCsvError(error.message);
+                console.error('Error:', error);
+            } finally {
+                document.getElementById('csvLoadingSpinner').style.display = 'none';
+            }
+        });
+
+        function displayCsvResults(results) {
+            const tbody = document.getElementById('csvResultsBody');
+            tbody.innerHTML = '';
+
+            results.forEach((result) => {
+                const row = document.createElement('tr');
+                
+                if (result.error) {
+                    row.innerHTML = `
+                        <td>${result.row}</td>
+                        <td colspan="6" class="text-danger"><i class="fas fa-exclamation-circle"></i> ${result.error}</td>
+                    `;
+                } else {
+                    const predictions = result.predictions;
+                    row.innerHTML = `
+                        <td>${result.row}</td>
+                        <td>${result.input.size}</td>
+                        <td>${result.input.rooms}</td>
+                        <td>${result.input.location}</td>
+                        <td>${result.input.age}</td>
+                        <td><strong>${formatCurrency(predictions.price)}</strong></td>
+                        <td>
+                            <span class="badge bg-info">${predictions.category_logistic}</span>
+                            <span class="badge bg-warning">${predictions.category_tree}</span>
+                        </td>
+                    `;
+                }
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function clearCsvResults() {
+            document.getElementById('csvForm').reset();
+            document.getElementById('csvResultsContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+            hideCsvError();
+        }
+    </script>
+</body>
+</html>
