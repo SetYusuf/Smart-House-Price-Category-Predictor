@@ -12,6 +12,36 @@
     --transition: all 0.3s ease;
 }
 
+/* Dark Mode (Default) */
+:root[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #2a2a2a;
+    --bg-input: #333;
+    --bg-header: rgba(42, 42, 42, 0.9);
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --text-muted: #999;
+    --border-color: #444;
+    --card-hover: #333;
+    --table-header: #1a1a1a;
+}
+
+/* Light Mode */
+:root[data-theme="light"] {
+    --bg-primary: #f5f7fa;
+    --bg-secondary: #c3cfe2;
+    --bg-tertiary: #ffffff;
+    --bg-input: #f8f9fa;
+    --bg-header: rgba(255, 255, 255, 0.9);
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-muted: #999;
+    --border-color: #e9ecef;
+    --card-hover: #f8f9fa;
+    --table-header: #f8f9fa;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -20,13 +50,14 @@
 
 html, body {
     scroll-behavior: smooth;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
     min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 /* ==================== Navigation Bar ==================== */
@@ -47,6 +78,21 @@ body {
     font-size: 1.8rem;
 }
 
+#themeToggle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+#themeToggle:hover {
+    transform: scale(1.1) rotate(20deg);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
 /* ==================== Main Container ==================== */
 .main-container {
     padding: 2rem 1rem;
@@ -56,12 +102,13 @@ body {
 
 /* ==================== Header Section ==================== */
 .header-section {
-    background: linear-gradient(135deg, rgba(42, 42, 42, 0.9) 0%, rgba(42, 42, 42, 0.7) 100%);
+    background: linear-gradient(135deg, var(--bg-header) 0%, var(--bg-header) 100%);
     border-radius: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(13, 110, 253, 0.2);
     backdrop-filter: blur(10px);
     box-shadow: var(--shadow-lg);
     animation: slideInDown 0.8s ease-out;
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 @keyframes slideInDown {
@@ -134,8 +181,8 @@ body {
     border-radius: 15px;
     overflow: hidden;
     transition: var(--transition);
-    background: #2a2a2a;
-    color: #ffffff;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
 }
 
 .card:hover {
@@ -178,8 +225,9 @@ body {
 
 /* ==================== Form Styles ==================== */
 .form-label {
-    color: #ffffff;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
 }
 
 .form-label i {
@@ -188,13 +236,13 @@ body {
 }
 
 .input-field {
-    border: 2px solid #444;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     padding: 0.75rem;
     font-size: 1rem;
     transition: var(--transition);
-    background: #333;
-    color: #ffffff;
+    background: var(--bg-input);
+    color: var(--text-primary);
 }
 
 .input-field:focus {
@@ -282,21 +330,23 @@ body {
 /* ==================== Input Summary Styles ==================== */
 .input-summary {
     border-left: 4px solid var(--primary-color);
-    background: #333 !important;
+    background: var(--bg-input) !important;
 }
 
 .input-summary h5 {
     color: var(--info-color);
     font-weight: 700;
     margin-bottom: 1rem;
+    transition: color 0.3s ease;
 }
 
 /* ==================== Result Item Styles ==================== */
 .result-item {
     border-radius: 10px;
     animation: fadeIn 0.5s ease-out;
-    background: #333 !important;
-    color: #ffffff;
+    background: var(--bg-input) !important;
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 @keyframes fadeIn {
@@ -310,7 +360,8 @@ body {
 
 .result-item h5 {
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
 }
 
 .bg-gradient {
@@ -363,17 +414,20 @@ body {
 .table {
     margin-bottom: 0;
     font-size: 0.95rem;
-    color: #ffffff;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
 }
 
 .table thead {
-    background: #1a1a1a;
+    background: var(--table-header);
     font-weight: 700;
     color: var(--info-color);
+    transition: background 0.3s ease;
 }
 
 .table tbody {
-    color: #ffffff;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
 }
 
 .table tbody tr {
@@ -381,8 +435,9 @@ body {
 }
 
 .table tbody tr:hover {
-    background-color: #333;
+    background-color: var(--card-hover);
     transform: scale(1.01);
+    transition: background-color 0.3s ease;
 }
 
 .table-responsive {
@@ -435,7 +490,8 @@ body {
     background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 110, 253, 0.1) 100%) !important;
     border: 2px dashed var(--info-color);
     animation: slideInUp 0.8s ease-out;
-    color: #ffffff !important;
+    color: var(--text-primary) !important;
+    transition: color 0.3s ease;
 }
 
 /* ==================== Footer Styles ==================== */
@@ -516,47 +572,5 @@ footer p {
 
     .card {
         page-break-inside: avoid;
-    }
-}
-
-/* ==================== Dark Mode Support (Optional) ==================== */
-@media (prefers-color-scheme: dark) {
-    body {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-        color: #e0e0e0;
-    }
-
-    .card {
-        background: #2a2a2a;
-        color: #e0e0e0;
-    }
-
-    .header-section {
-        background: linear-gradient(135deg, rgba(42, 42, 42, 0.9) 0%, rgba(42, 42, 42, 0.7) 100%);
-    }
-
-    .input-field {
-        background: #333;
-        color: #e0e0e0;
-        border-color: #444;
-    }
-
-    .input-field:focus {
-        border-color: var(--primary-color);
-        background: #353535;
-    }
-
-    .table thead {
-        background: #333;
-        color: var(--info-color);
-    }
-
-    .table tbody tr:hover {
-        background-color: #333;
-    }
-
-    #emptyState {
-        border-color: var(--primary-color);
-        background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 110, 253, 0.1) 100%);
     }
 }
